@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,12 @@
 package uk.gov.hmrc.ui.pages
 
 import com.typesafe.scalalogging.LazyLogging
-import org.openqa.selenium.support.ui.{ExpectedConditions, FluentWait, Wait, WebDriverWait}
-import org.openqa.selenium.{By, JavascriptExecutor, WebDriver, WebElement}
+import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
+import org.openqa.selenium.{By, WebElement}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.matchers.must.Matchers
 import uk.gov.hmrc.selenium.component.PageObject
-import uk.gov.hmrc.selenium.webdriver
 import uk.gov.hmrc.ui.driver.BrowserDriver
-import uk.gov.hmrc.selenium.webdriver.Driver
-
 import java.time.Duration
 
 trait BasePage extends PageObject with Eventually with Matchers with LazyLogging with BrowserDriver {
