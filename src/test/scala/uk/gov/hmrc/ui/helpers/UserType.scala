@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.ui.driver
+package uk.gov.hmrc.ui.helpers
 
-import org.openqa.selenium.WebDriver
-import uk.gov.hmrc.selenium.webdriver.Driver
+enum UserType:
+  // http://localhost:8033/charities-management/
+  case Organisation, Agent
 
-trait BrowserDriver {
-  implicit def driver: WebDriver = Driver.instance
-}
+  def getEnrolmentKey: String = this match {
+    case Organisation => "HMRC-CHAR-ORG"
+    case Agent        => "HMRC-CHAR-AGENT"
+  }
+
+  def getIdentifierName: String = this match {
+    case Organisation => "CHARID"
+    case Agent        => "AGENTCHARID"
+  }
+
+  def getIdentifierValue: String = this match {
+    case Organisation => "TEST-ORG-REF"
+    case Agent        => "TEST-AGENT-REF"
+  }

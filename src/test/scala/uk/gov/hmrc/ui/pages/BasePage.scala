@@ -51,10 +51,15 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
     val legendText                    = By.ByClassName("govuk-fieldset__legend")
     val checkYouAnswersSummaryList    = By.ByClassName("govuk-summary-list__row")
     val pageNotFoundContent           = By.ByClassName("govuk-grid-row")
+    val serviceName                   = By.ByClassName("govuk-service-navigation__text")
+    val languageToggle                = By.ByClassName("hmrc-service-navigation-language-select__list")
   }
 
   def pageUrl: String
   def pageTitle: String
+
+  /** Navigation method(s) */
+  def navigateToPage(url: String): Unit = driver.navigate().to(url)
 
   /** Wait for visibility of an element */
   def waitForVisibilityOfElement(selector: By): WebElement =
@@ -96,6 +101,16 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
     println("Actual page caption is: " + driver.findElement(Locators.txtCaption).getText)
   }
 
+  def verifyDynamicPageCaption(expectedCaption: String): Unit = {
+    waitForVisibilityOfElement(Locators.txtCaption)
+    val actualCaption = driver.findElement(Locators.txtCaption).getText
+    assert(
+      actualCaption.contains(expectedCaption),
+      s"Page header mismatch! Expected: $expectedCaption, Actual: $actualCaption"
+    )
+    println("Actual page caption is: " + driver.findElement(Locators.txtCaption).getText)
+  }
+
   def verifyPageHeader(expectedHeader: String): Unit = {
     waitForVisibilityOfElement(Locators.txtHeader)
     val actualHeader = driver.findElement(Locators.txtHeader).getText
@@ -104,6 +119,22 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
       s"Page header mismatch! Expected: $expectedHeader, Actual: $actualHeader"
     )
     println("Actual page header is: " + driver.findElement(Locators.txtHeader).getText)
+  }
+
+  /** Verify service navigation elements (title & language toggle) */
+  def verifyServiceName(expectedName: String): Unit = {
+    waitForVisibilityOfElement(Locators.serviceName)
+    val actualName = driver.findElement(Locators.serviceName).getText
+    assert(
+      actualName == expectedName,
+      s"Service name mismatch! Expected: $expectedName, Actual: $actualName"
+    )
+  }
+
+  def verifyLanguageToggleIsPresent(): Unit = {
+    waitForVisibilityOfElement(Locators.languageToggle)
+    val languageToggle = driver.findElement(Locators.languageToggle)
+    assert(languageToggle.isDisplayed, "Language toggle isn't present!")
   }
 
   /** Verify that a hint includes expected message */
@@ -127,4 +158,7 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
     )
     println("Actual page paragraph is: " + driver.findElement(Locators.paragraphText).getText)
   }
+
+  /** Verify that the card components are present */
+
 }
