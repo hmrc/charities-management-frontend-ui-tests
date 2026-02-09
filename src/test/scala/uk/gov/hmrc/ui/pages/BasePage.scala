@@ -32,27 +32,20 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
 
   /** Locator values */
   object Locators {
-    val btnContinue                   = "//button[@type='submit']"
-    val lnkBack                       = "Back"
-    val lnkHeader                     = ".govuk-header__link.govuk-header__service-name"
-    val rdoYes                        = "#value_0"
-    val rdoNo                         = "#value_1"
-    val txtFileName                   = ".govuk-body"
-    val txtCaption                    = By.ByClassName("govuk-caption-l")
-    val txtHeader: By                 = By.xpath("//h1")
-    val txtAddressPostCode            = By.ById("postcode")
-    val inputYourClaimReferenceNumber = By.ByClassName("govuk-input")
-    val inputYourUserId: By           = By.xpath("//input[@name='authorityId']")
-    val hintText                      = By.ById("value-hint")
-    val paragraphText                 = By.ByClassName("govuk-body")
-    val errorSummary                  = By.ByClassName("govuk-error-summary__body")
-    val errorMsg                      = By.ById("value-error")
-    val listText                      = By.ByClassName("govuk-list")
-    val legendText                    = By.ByClassName("govuk-fieldset__legend")
-    val checkYouAnswersSummaryList    = By.ByClassName("govuk-summary-list__row")
-    val pageNotFoundContent           = By.ByClassName("govuk-grid-row")
-    val serviceName                   = By.ByClassName("govuk-service-navigation__text")
-    val languageToggle                = By.ByClassName("hmrc-service-navigation-language-select__list")
+    val btnContinue         = "//button[@type='submit']"
+    val lnkBack             = "Back"
+    val lnkHeader           = ".govuk-header__link.govuk-header__service-name"
+    val txtCaption          = By.ByClassName("govuk-caption-l")
+    val txtHeader: By       = By.xpath("//h1")
+    val hintText            = By.ById("value-hint")
+    val paragraphText       = By.ByClassName("govuk-body")
+    val errorSummary        = By.ByClassName("govuk-error-summary__body")
+    val errorMsg            = By.ById("value-error")
+    val pageNotFoundContent = By.ByClassName("govuk-grid-row")
+    val serviceName         = By.ByClassName("govuk-service-navigation__text")
+    val languageToggle      = By.ByClassName("hmrc-service-navigation-language-select__list")
+    val firstCard           = By.xpath("//*[@id=\"main-content\"]/div/div/div/div/ul/li[1]/div")
+    val secondCard          = By.xpath("//*[@id=\"main-content\"]/div/div/div/div/ul/li[2]/div")
   }
 
   def pageUrl: String
@@ -160,5 +153,26 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
   }
 
   /** Verify that the card components are present */
+  def verifyFirstCardComponent(expectedText: String): Unit = {
+    waitForVisibilityOfElement(Locators.firstCard)
+    val actualText = driver.findElement(Locators.firstCard).getText
+    assert(
+      actualText == expectedText,
+      s"First card components mismatch! Expected: $expectedText, Actual: $actualText"
+    )
+  }
 
+  def verifySecondCardComponent(expectedText: String): Unit = {
+    waitForVisibilityOfElement(Locators.secondCard)
+    val actualText = driver.findElement(Locators.secondCard).getText
+    assert(
+      actualText == expectedText,
+      s"First card components mismatch! Expected: $expectedText, Actual: $actualText"
+    )
+  }
+
+  /** Helper method for passing one string to verify a list of text instead of repeating for components I.e., a
+    * paragraph could have multiple bullet points or our card component returns the text as individual strings
+    */
+  def createSingleStringFromMany(listOfStrings: String*): String = listOfStrings.mkString("\n")
 }

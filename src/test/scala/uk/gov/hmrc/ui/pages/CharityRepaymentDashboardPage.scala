@@ -21,10 +21,15 @@ object CharityRepaymentDashboardPage extends BasePage {
   override def pageUrl: String   = "charity-repayment-dashboard"
   override def pageTitle: String = "Charity repayment dashboard - Charities - GOV.UK"
 
-  def pageHeader: String  = "Charity repayment dashboard"
-  def serviceName: String = "Charities Management"
-  def pageCaption: String = "HMRC Charities reference:"
-  def pageContent: String = "Before you make a claim, complete and save any schedule spreadsheets."
+  def pageHeader: String    = "Charity repayment dashboard"
+  def serviceName: String   = "Charities Management"
+  def pageCaption: String   = "HMRC Charities reference:"
+  def pageContent: String   = "Before you make a claim, complete and save any schedule spreadsheets."
+  def cardOneHeader: String = "Make a repayment claim"
+  def cardOneText: String   = "Use this to make a repayment claim."
+  def cardTwoHeader: String = "Make a repayment claim using software"
+  def cardTwoText: String   = "Use this to make a charity repayment claim using software, like a database."
+  def hiddenText: String    = "(opens in new tab)"
 
   def validatePageContent(): Unit = {
     verifyPageUrl(pageUrl)
@@ -34,5 +39,7 @@ object CharityRepaymentDashboardPage extends BasePage {
     verifyLanguageToggleIsPresent()
     verifyDynamicPageCaption(pageCaption)
     verifyParagraphText(pageContent)
+    verifyFirstCardComponent(createSingleStringFromMany(cardOneHeader, cardOneText))
+    verifySecondCardComponent(createSingleStringFromMany(hiddenText, cardTwoHeader, cardTwoText))
   }
 }
