@@ -28,8 +28,3 @@ enum UserType:
     case Organisation => "CHARID"
     case Agent        => "AGENTCHARID"
   }
-
-  def getIdentifierValue: String = this match {
-    case Organisation => "TEST-ORG-REF"
-    case Agent        => "TEST-AGENT-REF"
-  }
