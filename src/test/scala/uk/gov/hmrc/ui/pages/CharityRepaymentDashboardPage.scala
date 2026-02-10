@@ -16,7 +16,11 @@
 
 package uk.gov.hmrc.ui.pages
 
+import uk.gov.hmrc.configuration.TestEnvironment
+
 object CharityRepaymentDashboardPage extends BasePage {
+  val charityManagementHost: String = TestEnvironment.url("charities-management-frontend")
+  val charityClaimsHost: String     = TestEnvironment.url("charities-claims-frontend")
 
   override def pageUrl: String   = "charity-repayment-dashboard"
   override def pageTitle: String = "Charity repayment dashboard - Charities - GOV.UK"
@@ -31,6 +35,11 @@ object CharityRepaymentDashboardPage extends BasePage {
   def cardTwoText: String   = "Use this to make a charity repayment claim using software, like a database."
   def hiddenText: String    = "(opens in new tab)"
 
+  /** These values are for verifying that when we click the card(s) the user has navigated to the correct pages */
+  def repaymentClaimURL: String         = s"$charityClaimsHost/make-a-charity-repayment-claim"
+  def repaymentClaimSoftwareURL: String =
+    "https://www.gov.uk/government/publications/charities-online-commercial-software-suppliers"
+
   def validatePageContent(): Unit = {
     verifyPageUrl(pageUrl)
     verifyPageTitle(pageTitle)
@@ -41,5 +50,21 @@ object CharityRepaymentDashboardPage extends BasePage {
     verifyParagraphText(pageContent)
     verifyFirstCardComponent(createSingleStringFromMany(cardOneHeader, cardOneText))
     verifySecondCardComponent(createSingleStringFromMany(hiddenText, cardTwoHeader, cardTwoText))
+  }
+
+  def goBackToDashboardAndValidateURL(): Unit = {
+    navigateToPage(charityManagementHost + "/" + pageUrl)
+    verifyPageUrl(pageUrl)
+  }
+
+  def clickFirstCardAndValidateURL(): Unit = {
+    clickFirstCardComponent()
+    verifyPageUrl(repaymentClaimURL)
+  }
+
+  def clickSecondCardAndValidateURL(): Unit = {
+    clickSecondCardComponent()
+    switchTab(1)
+    verifyPageUrl(repaymentClaimSoftwareURL)
   }
 }

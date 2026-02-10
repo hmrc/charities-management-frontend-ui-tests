@@ -17,7 +17,6 @@
 package uk.gov.hmrc.ui.helpers
 
 enum UserType:
-  // http://localhost:8033/charities-management/
   case Organisation, Agent
 
   def getEnrolmentKey: String = this match {

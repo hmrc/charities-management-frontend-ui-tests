@@ -62,6 +62,18 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
   def waitForUrl(expectedUrl: String): Unit =
     w.until(ExpectedConditions.urlContains(expectedUrl))
 
+  /** Wait to ensure an element is clickable */
+  override def click(selector: By): Unit = {
+    val element = waitForVisibilityOfElement(selector)
+    element.click()
+  }
+
+  /** Switch tabs, when we use card two the page will open in a new tab */
+  def switchTab(whichTabToBeOn: Int): Unit = {
+    val windowHandles = driver.getWindowHandles.toArray
+    driver.switchTo.window(windowHandles(whichTabToBeOn).asInstanceOf[String])
+  }
+
   /** Generic methods that all pages will use to ensure correct elements are rendered / included on the page */
   def verifyPageUrl(expectedUrl: String): Unit = {
     waitForUrl(expectedUrl)
@@ -170,6 +182,13 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
       s"First card components mismatch! Expected: $expectedText, Actual: $actualText"
     )
   }
+
+  /** Verify clicking the card */
+  def clickFirstCardComponent(): Unit =
+    click(Locators.firstCard)
+
+  def clickSecondCardComponent(): Unit =
+    click(Locators.secondCard)
 
   /** Helper method for passing one string to verify a list of text instead of repeating for components I.e., a
     * paragraph could have multiple bullet points or our card component returns the text as individual strings
