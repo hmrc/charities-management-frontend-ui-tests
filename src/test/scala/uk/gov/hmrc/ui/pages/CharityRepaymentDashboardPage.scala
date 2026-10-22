@@ -16,27 +16,26 @@
 
 package uk.gov.hmrc.ui.pages
 
+import org.openqa.selenium.By
 import uk.gov.hmrc.configuration.TestEnvironment
 
 object CharityRepaymentDashboardPage extends BasePage {
+
   val charityManagementHost: String = TestEnvironment.url("charities-management-frontend")
   val charityClaimsHost: String     = TestEnvironment.url("charities-claims-frontend")
 
-  override def pageUrl: String   = "charity-repayment-dashboard"
-  override def pageTitle: String = "Charity repayment dashboard - Charities - GOV.UK"
+  override def pageUrl: String   = "manage-charity-repayment-claim"
+  override def pageTitle: String = "Manage charity repayment claim - Make a charity tax repayment claim - GOV.UK"
 
-  def pageHeader: String    = "Charity repayment dashboard"
-  def serviceName: String   = "Charities Management"
-  def pageCaption: String   = "HMRC Charities reference:"
-  def pageContent: String   = "Before you make a claim, complete and save any schedule spreadsheets."
-  def cardOneHeader: String = "Make a repayment claim"
-  def cardOneText: String   = "Use this to make a repayment claim."
-  def cardTwoHeader: String = "Make a repayment claim using software"
-  def cardTwoText: String   = "Use this to make a charity repayment claim using software, like a database."
-  def hiddenText: String    = "(opens in new tab)"
-
-  /** These values are for verifying that when we click the card(s) the user has navigated to the correct pages */
-  def repaymentClaimURL: String         = s"$charityClaimsHost/make-a-charity-repayment-claim"
+  def pageHeader: String                = "Manage charity repayment claim"
+  def serviceName: String               = "Make a charity tax repayment claim"
+  def pageCaption: String               = "HMRC Charities reference:"
+  def pageContent: String               =
+    "Complete any Gift Aid, Other Income or Community Buildings (opens in new tab) schedule spreadsheets before making a new claim."
+  // Current dashboard links
+  def repaymentClaimLink: By            = By.linkText("Use the charities online service")
+  def repaymentSoftwareLink: By         = By.linkText("Use HMRC-recognised software (opens in new tab)")
+  def repaymentClaimURL: String         = s"$charityClaimsHost/make-a-charity-repayment-claim?claimId=blank"
   def repaymentClaimSoftwareURL: String =
     "https://www.gov.uk/government/publications/charities-online-commercial-software-suppliers"
 
@@ -48,8 +47,22 @@ object CharityRepaymentDashboardPage extends BasePage {
     verifyLanguageToggleIsPresent()
     verifyDynamicPageCaption(pageCaption)
     verifyParagraphText(pageContent)
-    verifyFirstCardComponent(createSingleStringFromMany(cardOneHeader, cardOneText))
-    verifySecondCardComponent(createSingleStringFromMany(hiddenText, cardTwoHeader, cardTwoText))
+    validateRepaymentLinks()
+  }
+
+  def validateRepaymentLinks(): Unit = {
+    val claimLink    = waitForVisibilityOfElement(repaymentClaimLink)
+    val softwareLink = waitForVisibilityOfElement(repaymentSoftwareLink)
+
+    assert(
+      claimLink.getAttribute("href") == repaymentClaimURL,
+      s"Unexpected repayment claim URL: ${claimLink.getAttribute("href")}"
+    )
+
+    assert(
+      softwareLink.getAttribute("href") == repaymentClaimSoftwareURL,
+      s"Unexpected software URL: ${softwareLink.getAttribute("href")}"
+    )
   }
 
   def goBackToDashboardAndValidateURL(): Unit = {
@@ -57,13 +70,14 @@ object CharityRepaymentDashboardPage extends BasePage {
     verifyPageUrl(pageUrl)
   }
 
+  // Keep existing method names so CharityRepaymentDashboardSpec still works
   def clickFirstCardAndValidateURL(): Unit = {
-    clickFirstCardComponent()
+    click(repaymentClaimLink)
     verifyPageUrl(repaymentClaimURL)
   }
 
   def clickSecondCardAndValidateURL(): Unit = {
-    clickSecondCardComponent()
+    click(repaymentSoftwareLink)
     switchTab(1)
     verifyPageUrl(repaymentClaimSoftwareURL)
   }
