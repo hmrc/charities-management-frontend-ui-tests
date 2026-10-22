@@ -42,7 +42,7 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
     val errorSummary        = By.ByClassName("govuk-error-summary__body")
     val errorMsg            = By.ById("value-error")
     val pageNotFoundContent = By.ByClassName("govuk-grid-row")
-    val serviceName         = By.ByClassName("govuk-service-navigation__text")
+    val serviceName         = By.ByClassName("govuk-service-navigation__service-name")
     val languageToggle      = By.ByClassName("hmrc-service-navigation-language-select__list")
     val firstCard           = By.xpath("//*[@id=\"main-content\"]/div/div/div/div/ul/li[1]/div")
     val secondCard          = By.xpath("//*[@id=\"main-content\"]/div/div/div/div/ul/li[2]/div")
@@ -108,12 +108,12 @@ trait BasePage extends PageObject with Eventually with Matchers with LazyLogging
 
   def verifyDynamicPageCaption(expectedCaption: String): Unit = {
     waitForVisibilityOfElement(Locators.txtCaption)
-    val actualCaption = driver.findElement(Locators.txtCaption).getText
+    val actualCaptions = driver.findElements(Locators.txtCaption).toArray.map(_.asInstanceOf[WebElement].getText)
     assert(
-      actualCaption.contains(expectedCaption),
-      s"Page header mismatch! Expected: $expectedCaption, Actual: $actualCaption"
+      actualCaptions.exists(_.contains(expectedCaption)),
+      s"Page caption mismatch! Expected to contain: $expectedCaption, Actual: ${actualCaptions.mkString(", ")}"
     )
-    println("Actual page caption is: " + driver.findElement(Locators.txtCaption).getText)
+    println("Actual page captions are: " + actualCaptions.mkString(", "))
   }
 
   def verifyPageHeader(expectedHeader: String): Unit = {
